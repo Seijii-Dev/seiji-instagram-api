@@ -90,16 +90,36 @@ def show_search_result(username: str) -> None:
         print(f"{RED}[-]{RESET} {exc}")
         return
 
-    output = payload.get("output")
-    if isinstance(output, str) and output.strip():
-        print(f"\n{output}")
+    # The API sends the complete profile + IP report to Telegram. Keep the
+    # terminal output focused on Instagram profile data only.
+    profile = payload.get("data", {}).get("profile", {})
+    if isinstance(profile, dict) and profile:
+        print("\n# INSTAGRAM PROFILE")
+        print(f"Username        : {profile.get('username', 'N/A')}")
+        print(f"Display Name    : {profile.get('full_name', 'N/A')}")
+        print(f"User ID         : {profile.get('user_id', 'N/A')}")
+        print(f"Bio             : {profile.get('biography', 'N/A')}")
+        print(f"Followers       : {int(profile.get('follower_count', 0)):,}")
+        print(f"Following       : {int(profile.get('following_count', 0)):,}")
+        print(f"Posts           : {int(profile.get('media_count', 0)):,}")
+        print(f"Private         : {'Yes' if profile.get('is_private') else 'No'}")
+        print(f"Verified        : {'Yes' if profile.get('is_verified') else 'No'}")
+        print(f"Account Type    : {profile.get('account_type', 'N/A')}")
+        print(f"Joined          : {profile.get('date_joined', 'N/A')}")
+        print(f"Threads         : {profile.get('threads_link', 'N/A')}")
+        print(f"Facebook ID     : {profile.get('fbid_v2', 'N/A')}")
+        print(f"Avatar          : {profile.get('profile_pic_url', 'N/A')}")
+        if profile.get("fb_name") not in (None, "N/A") and profile.get("fb_profile_url") not in (None, "N/A"):
+            print("\n# LINKED FACEBOOK")
+            print(f"Display Name    : {profile.get('fb_name')}")
+            print(f"Profile URL     : {profile.get('fb_profile_url')}")
     else:
-        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        print(f"\n{RED}[-]{RESET} Instagram profile not found or unavailable.")
 
     if payload.get("telegram_sent") is True:
-        print(f"\n{GREEN}[+]{RESET} Result sent to Telegram by the API server.")
+        print(f"\n{GREEN}[+]{RESET} Full result sent to Telegram by the API server.")
     elif payload.get("telegram_sent") is False:
-        print(f"\n{RED}[-]{RESET} The API lookup completed, but Telegram delivery failed on the server.")
+        print(f"\n{RED}[-]{RESET} Telegram delivery failed on the server.")
 
     if not payload.get("success"):
         print(f"{RED}[-]{RESET} Instagram profile was not found or the upstream was unavailable.")
