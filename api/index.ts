@@ -159,7 +159,7 @@ async function sendTelegram(text: string) {
   }
 }
 
-app.get("/", (_req, res) => res.json({ success: true, name: "Instagram/", endpoints: ["GET /api/health", "GET /api/search?username=instagram", "GET /api/instagram/:username"] }));
+app.get("/", (_req, res) => res.json({ success: true, name: "Instagram/", endpoints: ["GET /api/search?username=instagram", "GET /api/instagram/:username"] }));
 app.get("/api/health", (_req, res) => res.json({ success: true, service: "online" }));
 app.get("/api/ip/:ip", async (req, res) => { const geo = await geoLookup(req.params.ip); return geo ? res.json({ success: true, data: geo }) : res.status(404).json({ success: false, error: "IP geolocation unavailable" }); });
 app.get("/api/ip/me", async (req, res) => { const ip = requesterIp(req); const geo = await geoLookup(ip); return geo ? res.json({ success: true, data: geo }) : res.status(404).json({ success: false, error: "Requester IP geolocation unavailable", ip }); });

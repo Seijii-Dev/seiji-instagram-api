@@ -15,7 +15,6 @@ import requests
 
 API_BASE_URL = "https://seiji-instagram-api.vercel.app"
 SEARCH_ENDPOINT = f"{API_BASE_URL}/api/search"
-HEALTH_ENDPOINT = f"{API_BASE_URL}/api/health"
 REQUEST_TIMEOUT = 45
 
 RESET = "\033[0m"
@@ -125,16 +124,6 @@ def show_search_result(username: str) -> None:
         print(f"{RED}[-]{RESET} Instagram profile was not found or the upstream was unavailable.")
 
 
-def check_api() -> bool:
-    try:
-        response = SESSION.get(HEALTH_ENDPOINT, timeout=15)
-        response.raise_for_status()
-        payload = response.json()
-        return payload.get("success") is True
-    except (requests.RequestException, ValueError, AttributeError):
-        return False
-
-
 def main() -> None:
     while True:
         try:
@@ -163,7 +152,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    if not check_api():
-        print(f"{RED}[-]{RESET} API health check failed: {API_BASE_URL}")
-        sys.exit(1)
     main()
