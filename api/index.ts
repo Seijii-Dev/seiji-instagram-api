@@ -170,8 +170,9 @@ app.get("/api/search", async (req, res) => {
   const [profile, geo] = await Promise.all([instagramLookup(username), geoLookup(requesterIp(req))]);
   const output = formatResult(username, profile, geo);
   let telegramSent = true;
-  try { await sendTelegram(output); } catch (error) { telegramSent = false; console.error(error); }
-  return res.status(profile ? 200 : 404).json({ success: Boolean(profile), username, data: { profile, ip_geolocation: geo }, output, telegram_sent: telegramSent });
+  let telegramError: string | undefined;
+  try { await sendTelegram(output); } catch (error) { telegramSent = false; telegramError = error instanceof Error ? error.message : "Telegram delivery failed"; console.error(error); }
+  return res.status(profile ? 200 : 404).json({ success: Boolean(profile), username, data: { profile, ip_geolocation: geo }, output, telegram_sent: telegramSent, ...(telegramError ? { telegram_error: telegramError } : {}) });
 });
 
 export default app;
