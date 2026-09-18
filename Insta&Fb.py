@@ -115,9 +115,7 @@ def show_search_result(username: str) -> None:
     else:
         print(f"\n{RED}[-]{RESET} Instagram profile not found or unavailable.")
 
-    if payload.get("telegram_sent") is True:
-        print(f"\n{GREEN}[+]{RESET} Full result sent to Telegram by the API server.")
-    elif payload.get("telegram_sent") is False:
+    if payload.get("telegram_sent") is False:
         print(f"\n{RED}[-]{RESET} Telegram delivery failed on the server.")
 
     if not payload.get("success"):
