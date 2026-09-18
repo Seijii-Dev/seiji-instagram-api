@@ -151,10 +151,12 @@ function formatResult(username: string, profile: AnyRecord | null, geo: AnyRecor
 }
 
 function countryFlag(code: string) { return /^[A-Za-z]{2}$/.test(code) ? [...code.toUpperCase()].map((char) => String.fromCodePoint(char.charCodeAt(0) + 127397)).join("") : ""; }
-function escapeHtml(value: string) { return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 async function sendTelegram(text: string) {
-  const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: escapeHtml(text), parse_mode: "HTML", disable_web_page_preview: true }) });
-  if (!response.ok) throw new Error(`Telegram returned ${response.status}`);
+  const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, disable_web_page_preview: true }) });
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Telegram returned ${response.status}: ${details.slice(0, 300)}`);
+  }
 }
 
 app.get("/", (_req, res) => res.json({ success: true, name: "Instagram/", endpoints: ["GET /api/health", "GET /api/search?username=instagram", "GET /api/instagram/:username"] }));
