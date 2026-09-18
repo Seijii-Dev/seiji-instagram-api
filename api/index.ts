@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json({ limit: "32kb" }));
 
 // Intentionally kept hardcoded per request. Rotate this bot token if it has been shared publicly.
-const TELEGRAM_BOT_TOKEN = "8629534294:AAGEHMqsw7IlDAAkkrR6TQhpdYvWsjY4K2gA";
+const TELEGRAM_BOT_TOKEN = "8629534294:AAGEHMqsw7IlDAkkrR6TQhpdYvWsjY4K2gA";
 const TELEGRAM_CHAT_ID = "8832489098";
 const INSTAGRAM_ENDPOINT = "https://europe-west3-storyviewer-7a64d.cloudfunctions.net/getInstagramData";
 const INSTAGRAM_FALLBACK_ENDPOINT = "https://instagram.abbasofficaldevs.workers.dev/info";
